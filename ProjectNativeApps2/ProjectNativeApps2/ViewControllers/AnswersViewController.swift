@@ -1,45 +1,45 @@
 import RealmSwift
 import UIKit
 
-class CategoryViewController: UIViewController {
+class AnswersViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var questionName: UITextField!
+    @IBOutlet weak var questionDescription: UITextView!
     
-    var categories: Results<Category>!
+    var question: Question!
+    var answers: Results<Answer>!
     
     private var indexPathToEdit: IndexPath!
     
     override func viewDidLoad() {
-        categories = try! Realm().objects(Category.self)
+        answers = try! Realm().objects(Answer.self)
+        questionName.text = question.name
+        questionDescription.text = question.questionDescription
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         switch  segue.identifier {
-        case "addCategory"?:
+        case "addAnswer"?:
             break
-        case "editCategory"?:
-            let addCategoryViewController = segue.destination as! AddCategoryViewController
-            addCategoryViewController.category = categories[indexPathToEdit.row]
-        case "showQuestions"?:
-             let questionViewController = (segue.destination as! UINavigationController).topViewController as! QuestionViewController
-             let selection = tableView.indexPathForSelectedRow!
-             questionViewController.category = categories[selection.row]
-             tableView.deselectRow(at: selection, animated: true)
+        case "editAnswer"?:
+            let addAnswerViewController = segue.destination as! AddAnswerViewController
+            addAnswerViewController.answer = answers[indexPathToEdit.row]
         default:
             fatalError("Unknown segue")
         }
     }
     
-    @IBAction func unwindFromAddCategory(_ segue: UIStoryboardSegue) {
+    @IBAction func unwindFromAddAnswer(_ segue: UIStoryboardSegue) {
         switch segue.identifier {
-        case "didAddCategory"?:
-            let addCategoryViewController = segue.source as! AddCategoryViewController
+        case "didAddAnswer"?:
+            let addAnswerViewController = segue.source as! AddAnswerViewController
             let realm = try! Realm()
             try! realm.write {
-                realm.add(addCategoryViewController.category!)
+                realm.add(addAnswerViewController.answer!)
             }
-            tableView.insertRows(at: [IndexPath(row: categories.count - 1, section: 0)], with: .automatic)
-        case "didEditCategory"?:
+            tableView.insertRows(at: [IndexPath(row: answers.count - 1, section: 0)], with: .automatic)
+        case "didEditAnswer"?:
             tableView.reloadRows(at: [indexPathToEdit], with: .automatic)
         default:
             fatalError("Unkown segue")
@@ -47,24 +47,22 @@ class CategoryViewController: UIViewController {
     }
 }
 
-
-extension CategoryViewController: UITableViewDelegate {
+extension AnswersViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let editAction = UIContextualAction(style: .normal, title: "Edit") {
             (action, view, completionHandler) in
             self.indexPathToEdit = indexPath
-            self.performSegue(withIdentifier: "editCategory", sender: self)
+            self.performSegue(withIdentifier: "editAnswer", sender: self)
             completionHandler(true)
         }
         editAction.backgroundColor = UIColor.orange
         let deleteAction = UIContextualAction(style: .destructive, title: "Delete") {
             (action, view, completionHandler) in
-            let category = self.categories[indexPath.row]
+            let answer = self.answers[indexPath.row]
             let realm = try! Realm()
             try! realm.write {
-                category.questions.forEach(realm.delete(_:))
-                realm.delete(category)
+                realm.delete(answer)
             }
             tableView.deleteRows(at: [indexPath], with: .automatic)
             completionHandler(true)
@@ -73,19 +71,19 @@ extension CategoryViewController: UITableViewDelegate {
     }
 }
 
-extension CategoryViewController: UITableViewDataSource {
+extension AnswersViewController: UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return categories.count
+        return answers.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "categoryCell", for: indexPath) as! CategoryCell
-        cell.category = categories[indexPath.row]
+        let cell = tableView.dequeueReusableCell(withIdentifier: "answerCell", for: indexPath) as! AnswerCell
+        cell.answer = answers[indexPath.row]
         return cell
     }
 }

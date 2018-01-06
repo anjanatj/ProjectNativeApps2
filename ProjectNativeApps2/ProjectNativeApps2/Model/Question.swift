@@ -5,7 +5,7 @@ class Question: Object {
     
     @objc dynamic var name = ""
     @objc dynamic var questionDescription = ""
-    let questions = List<Answer>()
+    let answers = List<Answer>()
     
     convenience init(name: String, questionDescription: String = "") {
         self.init()
