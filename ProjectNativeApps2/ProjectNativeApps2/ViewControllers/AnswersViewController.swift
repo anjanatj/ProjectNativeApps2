@@ -91,6 +91,10 @@ extension AnswersViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "answerCell", for: indexPath) as! AnswerCell
         cell.answer = answers[indexPath.row]
+        cell.nameLabel.numberOfLines = 0
+        cell.nameLabel.lineBreakMode = .byWordWrapping
+        cell.nameLabel.frame.size.width = 300
+        cell.nameLabel.sizeToFit()
         return cell
     }
 }
