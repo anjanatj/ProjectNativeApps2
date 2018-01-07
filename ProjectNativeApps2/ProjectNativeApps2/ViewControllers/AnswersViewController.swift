@@ -19,7 +19,7 @@ class AnswersViewController: UIViewController {
     private var indexPathToEdit: IndexPath!
     
     override func viewDidLoad() {
-        answers = try! Realm().objects(Answer.self)
+        answers = question.answers.filter("TRUEPREDICATE")
         questionName.text = question.name
         questionDescription.text = question.questionDescription
     }
@@ -40,9 +40,10 @@ class AnswersViewController: UIViewController {
         switch segue.identifier {
         case "didAddAnswer"?:
             let addAnswerViewController = segue.source as! AddAnswerViewController
+            let answer = addAnswerViewController.answer!
             let realm = try! Realm()
             try! realm.write {
-                realm.add(addAnswerViewController.answer!)
+                question.answers.append(answer)
             }
             tableView.insertRows(at: [IndexPath(row: answers.count - 1, section: 0)], with: .automatic)
         case "didEditAnswer"?:

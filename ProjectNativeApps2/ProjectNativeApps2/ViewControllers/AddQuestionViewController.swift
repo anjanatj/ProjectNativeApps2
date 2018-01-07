@@ -43,7 +43,7 @@ class AddQuestionViewController: UITableViewController {
         case "didEditQuestion"?:
             try! Realm().write {
                 question!.name = nameField.text!
-                question!.questionDescription = nameField.text!
+                question!.questionDescription = descriptionField.text!
             }
         default:
             fatalError("Unknown segue")

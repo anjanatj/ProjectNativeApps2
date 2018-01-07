@@ -22,8 +22,7 @@ class QuestionViewController: UIViewController {
     
     override func viewDidLoad() {
         searchBar.delegate = self
-        //questions = try! Realm().objects(category.questions)
-        questions = try! Realm().objects(Question.self)
+        questions = category.questions.filter("TRUEPREDICATE")
         filteredQuestions = questions
         title = category.name
     }
@@ -115,7 +114,7 @@ extension QuestionViewController: UISearchBarDelegate {
         if searchText.isEmpty {
             filteredQuestions = questions
         } else {
-            filteredQuestions = realm.objects(Question.self).filter("name CONTAINS[cd] %@", searchText.lowercased())
+            filteredQuestions = questions.filter("name CONTAINS[cd] %@", searchText.lowercased())
         }
         tableView.reloadData()
     }
