@@ -1,3 +1,9 @@
+//
+//  Created by Anjana T'Jampens.
+//  Based on Tasks 4 from class.
+//  Copyright © 2018 Anjana T'Jampens. All rights reserved.
+//
+
 import RealmSwift
 import UIKit
 
@@ -24,6 +30,7 @@ class CategoryViewController: UIViewController {
              let questionViewController = (segue.destination as! UINavigationController).topViewController as! QuestionViewController
              let selection = tableView.indexPathForSelectedRow!
              questionViewController.category = categories[selection.row]
+             NSLog(questionViewController.category.name)
              tableView.deselectRow(at: selection, animated: true)
         default:
             fatalError("Unknown segue")
